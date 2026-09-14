@@ -1,3 +1,13 @@
 __pycache__/
 *.pyc
 .pytest_cache/
+
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+
+*.pem
+aws_ec2_key
