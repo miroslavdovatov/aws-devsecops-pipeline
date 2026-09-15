@@ -75,12 +75,25 @@ resource "aws_instance" "app_server" {
   key_name               = aws_key_pair.deployer.key_name
   vpc_security_group_ids = [aws_security_group.web_sg.id]
 
+  user_data = <<-EOF
+              #!/bin/bash
+              curl -fsSL https://get.docker.com -o get-docker.sh
+              sh get-docker.sh
+              
+              usermod -aG docker ubuntu
+              EOF
+
   tags = {
     Name = "FastAPI-Host"
   }
 }
 
+resource "aws_eip" "app_eip" {
+  instance = aws_instance.app_server.id
+  domain   = "vpc"
+}
+
 output "server_public_ip" {
-  value       = aws_instance.app_server.public_ip
-  description = "The public IP address of the newly created EC2 instance"
+  value       = aws_eip.app_eip.public_ip
+  description = "The permanent Elastic IP of the EC2 instance"
 }
