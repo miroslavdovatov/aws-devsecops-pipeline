@@ -4,7 +4,7 @@ from sqlalchemy import create_engine, text
 
 app = FastAPI()
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./app.db")
 engine = create_engine(DATABASE_URL)
 
 @app.get("/health")
