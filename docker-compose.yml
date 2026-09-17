@@ -7,13 +7,15 @@ services:
       POSTGRES_DB: appdb
     ports:
       - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U dev_user -d appdb"]
       interval: 3s
       retries: 5
 
   api:
-    build: .
+    image: ghcr.io/miroslavdovatov/cicd-project/api:latest
     ports:
       - "8000:8000"
     environment:
@@ -21,3 +23,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
+
+volumes:
+  postgres_data:

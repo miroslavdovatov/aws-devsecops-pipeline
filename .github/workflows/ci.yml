@@ -40,7 +40,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r app/requirements.txt
-          
+
       - name: Run Pytest
         env:
           DATABASE_URL: postgresql://dev_user:dev_password@localhost:5432/appdb
@@ -52,7 +52,7 @@ jobs:
     needs: test
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    
+
     permissions:
       contents: read
       packages: write
@@ -81,7 +81,19 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy to EC2
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Copy docker-compose.yml to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "docker-compose.yml"
+          target: "/home/ubuntu/"
+
+      - name: Deploy via Docker Compose
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -89,10 +101,5 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
-            docker pull ghcr.io/${{ github.repository }}/api:latest
-
-            docker stop fastapi-server || true
-            docker rm fastapi-server || true
-
-            docker run -d --name fastapi-server -p 8000:8000 --restart unless-stopped ghcr.io/${{ github.repository }}/api:latest
+            docker compose pull
+            docker compose up -d --remove-orphans
