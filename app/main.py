@@ -61,3 +61,5 @@ def get_notes():
         return {"notes": notes}
     except Exception:
         raise HTTPException(status_code=500, detail="Failed to fetch notes")
+
+#test wipe
