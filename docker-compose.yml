@@ -53,7 +53,7 @@ services:
       - grafana_data:/var/lib/grafana
 
   uptime-kuma:
-    image: louislam/uptime-kuma:1
+    image: louislam/uptime-kuma:2
     container_name: uptime-kuma
     volumes:
       - uptime-kuma_data:/app/data
