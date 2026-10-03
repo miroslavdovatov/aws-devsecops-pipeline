@@ -94,7 +94,7 @@ resource "aws_security_group" "web_sg" {
 
 resource "aws_instance" "app_server" {
   ami                    = data.aws_ami.ubuntu.id
-  instance_type          = "t3.micro"
+  instance_type          = "t3.small"
   key_name               = aws_key_pair.deployer.key_name
   vpc_security_group_ids = [aws_security_group.web_sg.id]
 
