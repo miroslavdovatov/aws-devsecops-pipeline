@@ -101,5 +101,6 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            docker system prune -af
             docker compose pull
             docker compose up -d --remove-orphans
