@@ -1,8 +1,11 @@
 import os
 from fastapi import FastAPI, HTTPException
 from sqlalchemy import create_engine, text
+from prometheus_fastapi_instrumentator import Instrumentator
 
 app = FastAPI()
+
+Instrumentator().instrument(app).expose(app)
 
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./app.db")
 engine = create_engine(DATABASE_URL)
@@ -61,5 +64,3 @@ def get_notes():
         return {"notes": notes}
     except Exception:
         raise HTTPException(status_code=500, detail="Failed to fetch notes")
-
-#test wipe
