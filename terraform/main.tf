@@ -34,7 +34,7 @@ resource "aws_key_pair" "deployer" {
 
 resource "aws_security_group" "web_sg" {
   name        = "app-security-group"
-  description = "Allow SSH and HTTP access"
+  description = "Allow SSH, HTTP, HTTPS, FastAPI, Grafana, and Uptime Kuma"
 
   ingress {
     description = "SSH access"
@@ -53,6 +53,14 @@ resource "aws_security_group" "web_sg" {
   }
 
   ingress {
+    description = "HTTPS access"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
     description = "FastAPI App Direct Access"
     from_port   = 8000
     to_port     = 8000
@@ -60,8 +68,23 @@ resource "aws_security_group" "web_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    description = "Grafana Dashboard"
+    from_port   = 3000
+    to_port     = 3000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "Uptime Kuma"
+    from_port   = 3001
+    to_port     = 3001
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   egress {
-    description = "Allow all outbound traffic"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
