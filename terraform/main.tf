@@ -53,6 +53,14 @@ resource "aws_security_group" "web_sg" {
   }
 
   ingress {
+    description = "Nginx Proxy Manager Admin"
+    from_port   = 81
+    to_port     = 81
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
     description = "HTTPS access"
     from_port   = 443
     to_port     = 443
